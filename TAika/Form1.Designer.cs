@@ -36,6 +36,7 @@
             this.gridi = new System.Windows.Forms.DataGridView();
             this.pnl = new System.Windows.Forms.Panel();
             this.dialogi = new System.Windows.Forms.GroupBox();
+            this.lblID = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -56,9 +57,9 @@
             this.kk_taakse = new System.Windows.Forms.Button();
             this.kk_eteen = new System.Windows.Forms.Button();
             this.lblKk = new System.Windows.Forms.Label();
-            this.lblID = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnReport = new System.Windows.Forms.Button();
+            this.lblViikko = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gridi)).BeginInit();
             this.pnl.SuspendLayout();
             this.dialogi.SuspendLayout();
@@ -103,6 +104,7 @@
             this.gridi.TabIndex = 0;
             this.gridi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridi_CellClick);
             this.gridi.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridi_doubleClick);
+            this.gridi.SelectionChanged += new System.EventHandler(this.gridi_SelectionChanged);
             // 
             // pnl
             // 
@@ -142,6 +144,16 @@
             this.dialogi.TabIndex = 5;
             this.dialogi.TabStop = false;
             this.dialogi.Text = "Tiedon lisäys";
+            // 
+            // lblID
+            // 
+            this.lblID.AutoSize = true;
+            this.lblID.Location = new System.Drawing.Point(23, 248);
+            this.lblID.Name = "lblID";
+            this.lblID.Size = new System.Drawing.Size(24, 22);
+            this.lblID.TabIndex = 12;
+            this.lblID.Text = "-1";
+            this.lblID.Visible = false;
             // 
             // button4
             // 
@@ -337,15 +349,6 @@
             this.lblKk.TabIndex = 9;
             this.lblKk.Text = "label6";
             // 
-            // lblID
-            // 
-            this.lblID.AutoSize = true;
-            this.lblID.Location = new System.Drawing.Point(23, 248);
-            this.lblID.Name = "lblID";
-            this.lblID.Size = new System.Drawing.Size(24, 22);
-            this.lblID.TabIndex = 12;
-            this.lblID.Text = "-1";
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -370,11 +373,22 @@
             this.btnReport.UseVisualStyleBackColor = true;
             this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
             // 
+            // lblViikko
+            // 
+            this.lblViikko.AutoSize = true;
+            this.lblViikko.Font = new System.Drawing.Font("Open Sans", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblViikko.Location = new System.Drawing.Point(473, 19);
+            this.lblViikko.Name = "lblViikko";
+            this.lblViikko.Size = new System.Drawing.Size(30, 26);
+            this.lblViikko.TabIndex = 12;
+            this.lblViikko.Text = "---";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(927, 614);
+            this.Controls.Add(this.lblViikko);
             this.Controls.Add(this.pnl);
             this.Controls.Add(this.btnReport);
             this.Controls.Add(this.pictureBox1);
@@ -427,6 +441,7 @@
         private System.Windows.Forms.Label lblID;
         private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label lblViikko;
     }
 }
 

@@ -388,5 +388,49 @@ namespace TAika
 
             System.Diagnostics.Process.Start(file);
         }
+
+        private void gridi_SelectionChanged(object sender, EventArgs e)
+        {
+            TimeSpan viikoTyoaika = new TimeSpan(37, 30, 0);
+            TimeSpan valintaYhteensa = new TimeSpan(0);
+            long ticksYhteensa = 0;
+            string vMin = "";
+            string viikkoYlitys = "";
+            long ylitys = 0;
+            TimeSpan spanYlitys = new TimeSpan(0);
+            string sYlitys = "";
+
+            foreach (DataGridViewRow drv in gridi.SelectedRows)
+            {
+                string tunnit = drv.Cells[5].Value.ToString().Replace(" h", "");
+                long ticksit = TimeSpan.Parse(tunnit).Ticks;
+                ticksYhteensa = ticksYhteensa + ticksit;
+            }
+            valintaYhteensa = TimeSpan.FromTicks(ticksYhteensa);
+
+            if (valintaYhteensa.Minutes < 10)
+                vMin = "0" + valintaYhteensa.Minutes;
+            else
+                vMin = valintaYhteensa.Minutes.ToString();
+
+            string valYht = ((valintaYhteensa.Days * 24) + valintaYhteensa.Hours) + ":" + vMin + " h";
+
+            if (valintaYhteensa.Ticks > viikoTyoaika.Ticks)
+            {
+                ylitys = valintaYhteensa.Ticks - viikoTyoaika.Ticks;
+                spanYlitys = TimeSpan.FromTicks(ylitys);
+
+                if (spanYlitys.Minutes < 10)
+                    sYlitys = "0" + spanYlitys.Minutes;
+                else
+                    sYlitys = spanYlitys.Minutes.ToString();
+
+                viikkoYlitys = " / ylitys +" + ((spanYlitys.Days * 24) + spanYlitys.Hours) + ":" + sYlitys + " h";
+            }
+            else
+                viikkoYlitys = "";
+
+            lblViikko.Text = "Valinta yhteensä: " + valYht + viikkoYlitys;
+        }
     }
 }
