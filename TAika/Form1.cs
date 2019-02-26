@@ -430,6 +430,8 @@ namespace TAika
             else
                 viikkoYlitys = "";
 
+
+            //-- Näytetään viikkoylitys jos valittujen rivien yhteismäärä ylittää viikkotyötunnit 37.5h.
             lblViikko.Text = "Valinta yhteensä: " + valYht + viikkoYlitys;
         }
     }
