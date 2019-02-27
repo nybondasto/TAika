@@ -14,6 +14,7 @@ namespace TAika
         public DateTime alku { get; set; }
         public DateTime loppu { get; set; }
         public string tyoaika { get; set; }
+        public string saldo { get; set; }
         public string info { get; set; }
         
     }

@@ -88,7 +88,8 @@ namespace TAika
             gridi.Columns[3].HeaderText = "Aloitusaika";
             gridi.Columns[4].HeaderText = "Lopetusaika";
             gridi.Columns[5].HeaderText = "Työaika";
-            gridi.Columns[6].HeaderText = "Info";
+            gridi.Columns[6].HeaderText = "Saldo";
+            gridi.Columns[7].HeaderText = "Info";
 
             gridi.Columns[1].DefaultCellStyle.Format = "dd.MM.yyyy";
             gridi.Columns[3].DefaultCellStyle.Format = "HH:mm";
@@ -101,7 +102,8 @@ namespace TAika
             gridi.Columns[3].FillWeight = 45;
             gridi.Columns[4].FillWeight = 45;
             gridi.Columns[5].FillWeight = 45;
-            gridi.Columns[6].FillWeight = 200;
+            gridi.Columns[6].FillWeight = 45;
+            gridi.Columns[7].FillWeight = 200;
 
             if (gridi.Rows != null && gridi.Rows.Count > 0)
                 riviID = (int)gridi.Rows[0].Cells[0].Value;
@@ -135,6 +137,43 @@ namespace TAika
                     string fipv = CultureInfo.CurrentCulture.TextInfo.ToLower(dayname.ToLower());
                     string vp = fipv.Substring(0, 2);
 
+                    string tyoaikaString = "";
+                    string[] ta;
+                    long tavoiteTyoaika = 0;
+                    long paivanErotus = 0;
+                    long tyoaika = 0;
+                    int tunnit = 0;
+                    int minuutit = 0;
+                    TimeSpan paivanSaldo;
+                    string saldo = "";
+                    int saldominuutit = 0;
+                    
+                    tyoaikaString = (string)dr["tyoaika"];
+                    ta = tyoaikaString.Split(':');
+                    tunnit = int.Parse(ta[0]);
+                    minuutit = int.Parse(ta[1]);
+                    tyoaika = new TimeSpan(tunnit, minuutit, 0).Ticks;
+                    tavoiteTyoaika = new TimeSpan(7, 30, 0).Ticks;
+                    paivanErotus = tyoaika - tavoiteTyoaika;
+                    paivanSaldo = TimeSpan.FromTicks(paivanErotus);
+                    saldominuutit = paivanSaldo.Minutes;
+
+                    if (tyoaika < tavoiteTyoaika)
+                    {
+
+                        if (Math.Abs(saldominuutit) < 10)
+                            saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + Math.Abs(saldominuutit) + " h";
+                        else
+                            saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + Math.Abs(saldominuutit) + " h";
+                    }
+                    else
+                    {
+                        if (saldominuutit < 10)
+                            saldo = "+" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + saldominuutit + " h";
+                        else
+                            saldo = "+" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + saldominuutit + " h";
+                    }
+
                     aikarivi ar = new aikarivi
                     {
                         id = (int)dr["id"],
@@ -143,8 +182,11 @@ namespace TAika
                         alku = (DateTime)dr["aloitus"],
                         loppu = (DateTime)dr["lopetus"],
                         tyoaika = (string)dr["tyoaika"] + " h",
-                        info = (string)dr["info"]
-                };
+                        info = (string)dr["info"],
+                        saldo = saldo
+                    };
+                                       
+
                     lst.Add(ar);
 
                     tsum = tsum + TimeSpan.Parse(dr["tyoaika"].ToString()).Ticks;
@@ -358,37 +400,10 @@ namespace TAika
 
         private void btnReport_Click(object sender, EventArgs e)
         {
-            string ktMin = kausiTotal.Minutes.ToString();
-            string file = @"c:\data\report.txt";
-            List<aikarivi> lst = HaeData(gkk, gvv);
-
-            StreamWriter sw = new StreamWriter(file, false, Encoding.UTF8);
-
-            sw.WriteLine("");
-            sw.WriteLine("");
-            sw.WriteLine("\tTYÖAIKARAPORTTI KAUDELTA " + gkk.ToString() + "/" + gvv.ToString());
-            sw.WriteLine("\t-----------------------------------------------------------------------------");
-            sw.WriteLine("");
-            sw.WriteLine("\tPVM\t\tALKU\tLOPPU\tTYÖAIKA\t\tINFO");
-            sw.WriteLine("");
-            
-            foreach(aikarivi ar in lst)
-            {
-                sw.WriteLine("\t" + ar.pvm.ToString(@"dd.MM.yyyy") + "\t" + ar.alku.ToString("HH:mm") + "\t" + ar.loppu.ToString("HH:mm") + "\t" + ar.tyoaika + "\t\t" + ar.info);
-            }
-
-            sw.WriteLine("\t-----------------------------------------------------------------------------");
-            if (kausiTotal.Minutes < 10)
-                ktMin = "0" + kausiTotal.Minutes;
-
-            sw.WriteLine("\tKausi yhteensä:\t\t\t" + ((kausiTotal.Days * 24) + kausiTotal.Hours) + ":" + ktMin + " h");
-
-            sw.Flush();
-            sw.Close();
-
-            System.Diagnostics.Process.Start(file);
+            TeeRaportti();
         }
 
+               
         private void gridi_SelectionChanged(object sender, EventArgs e)
         {
             TimeSpan viikoTyoaika = new TimeSpan(37, 30, 0);
@@ -399,6 +414,8 @@ namespace TAika
             long ylitys = 0;
             TimeSpan spanYlitys = new TimeSpan(0);
             string sYlitys = "";
+            string sSana = "";
+            string sMerkki = "";
 
             foreach (DataGridViewRow drv in gridi.SelectedRows)
             {
@@ -415,24 +432,127 @@ namespace TAika
 
             string valYht = ((valintaYhteensa.Days * 24) + valintaYhteensa.Hours) + ":" + vMin + " h";
 
-            if (valintaYhteensa.Ticks > viikoTyoaika.Ticks)
-            {
+           // if (valintaYhteensa.Ticks > viikoTyoaika.Ticks)
+           // {
                 ylitys = valintaYhteensa.Ticks - viikoTyoaika.Ticks;
                 spanYlitys = TimeSpan.FromTicks(ylitys);
+
+            if (spanYlitys.Ticks < 0)
+            {
+                sSana = "alitus";
+                long miinusTicks = -1 * spanYlitys.Ticks;
+                spanYlitys = TimeSpan.FromTicks(miinusTicks);
+                sMerkki = "-";
+            }
+            else
+            {
+                sSana = "ylitys";
+                sMerkki = "+";
+            }
 
                 if (spanYlitys.Minutes < 10)
                     sYlitys = "0" + spanYlitys.Minutes;
                 else
                     sYlitys = spanYlitys.Minutes.ToString();
 
-                viikkoYlitys = " / ylitys +" + ((spanYlitys.Days * 24) + spanYlitys.Hours) + ":" + sYlitys + " h";
-            }
-            else
-                viikkoYlitys = "";
+                viikkoYlitys = " / " + sSana + " " + sMerkki + ((spanYlitys.Days * 24) + spanYlitys.Hours) + ":" + sYlitys + " h";
+            //}
+            //else
+            //    viikkoYlitys = "";
 
 
             //-- Näytetään viikkoylitys jos valittujen rivien yhteismäärä ylittää viikkotyötunnit 37.5h.
             lblViikko.Text = "Valinta yhteensä: " + valYht + viikkoYlitys;
+        }
+
+
+
+
+        private void TeeRaportti()
+        {
+
+            string ktMin = kausiTotal.Minutes.ToString();
+            string file = @"c:\data\report.txt";
+            List<aikarivi> lst = HaeData(gkk, gvv);
+            string tyoaikaString = "";
+            string[] ta;
+            long tavoiteTyoaika = 0;
+            long paivanErotus = 0;
+            long tyoaika = 0;
+            int tunnit = 0;
+            int minuutit = 0;
+            TimeSpan paivanSaldo;
+            string saldo = "";
+            int saldominuutit = 0;
+            long kausisaldo = 0;
+            long kausiErotus = 0;
+            TimeSpan kausiSaldoTimespan;
+
+            StreamWriter sw = new StreamWriter(file, false, Encoding.UTF8);
+
+            sw.WriteLine("");
+            sw.WriteLine("");
+            sw.WriteLine("\tTYÖAIKARAPORTTI KAUDELTA " + gkk.ToString() + "/" + gvv.ToString());
+            sw.WriteLine("\t----------------------------------------------------------------------------------------------------------------------------------------------------------");
+            sw.WriteLine("");
+            sw.WriteLine("\tPVM\t\tALKU\tLOPPU\tTYÖAIKA\t\tSALDO\t\tINFO");
+            sw.WriteLine("\t----------\t-----\t-----\t-------\t\t-------\t\t----");
+
+            foreach (aikarivi ar in lst)
+            {
+                tyoaikaString = ar.tyoaika.Replace(" h", "");
+                ta = tyoaikaString.Split(':');
+                tunnit = int.Parse(ta[0]);
+                minuutit = int.Parse(ta[1]);
+                tyoaika = new TimeSpan(tunnit, minuutit, 0).Ticks;
+                tavoiteTyoaika = new TimeSpan(7, 30, 0).Ticks;
+                paivanErotus = tyoaika - tavoiteTyoaika;
+                paivanSaldo = TimeSpan.FromTicks(paivanErotus);
+                saldominuutit = paivanSaldo.Minutes;
+
+                if (tyoaika < tavoiteTyoaika)
+                {
+
+                    if (Math.Abs(saldominuutit) < 10)
+                        saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + Math.Abs(saldominuutit) + " h";
+                    else
+                        saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + Math.Abs(saldominuutit) + " h";
+                }
+                else
+                {
+                    if (saldominuutit < 10)
+                        saldo = "+" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + saldominuutit + " h";
+                    else
+                        saldo = "+" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + saldominuutit + " h";
+                }
+
+                kausisaldo = kausisaldo + tyoaika;
+
+                sw.WriteLine("\t" + ar.pvm.ToString(@"dd.MM.yyyy") + "\t" + ar.alku.ToString("HH:mm") + "\t" + ar.loppu.ToString("HH:mm") + "\t" + ar.tyoaika + "\t\t" + saldo + "\t\t" + ar.info);
+            }
+
+            sw.WriteLine("\t----------------------------------------------------------------------------------------------------------------------------------------------------------");
+            if (kausiTotal.Minutes < 10)
+                ktMin = "0" + kausiTotal.Minutes;
+
+            long kausiTavoiteTicks = 4 * (new TimeSpan(37, 30, 0).Ticks);
+            kausiErotus = kausiTotal.Ticks - kausiTavoiteTicks;
+            kausiSaldoTimespan = TimeSpan.FromTicks(kausiErotus);
+
+            int kausiSaldoMinutes = kausiSaldoTimespan.Minutes;
+            string ksMinutes = "";
+
+            if (Math.Abs(kausiSaldoMinutes) < 10)
+                ksMinutes = "0" + Math.Abs(kausiSaldoMinutes);
+            else
+                ksMinutes = Math.Abs(kausiSaldoMinutes).ToString();
+
+            sw.WriteLine("\tKausi yhteensä:\t\t\t" + ((kausiTotal.Days * 24) + kausiTotal.Hours) + ":" + ktMin + " h\t\t" + ((kausiSaldoTimespan.Days * 24) + kausiSaldoTimespan.Hours) + ":" + ksMinutes + " h");
+
+            sw.Flush();
+            sw.Close();
+
+            System.Diagnostics.Process.Start(file);
         }
     }
 }
