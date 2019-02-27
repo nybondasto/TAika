@@ -12,7 +12,6 @@ C:\DATA\TAika\TAika\obj\Debug\TAika.csproj.CoreCompileInputs.cache
 C:\DATA\TAika\TAika\obj\Debug\TAika.csproj.CopyComplete
 C:\DATA\TAika\TAika\obj\Debug\TAika.exe
 C:\DATA\TAika\TAika\obj\Debug\TAika.pdb
-C:\DATA\Tyoaika\TAika\obj\Debug\TAika.csprojAssemblyReference.cache
 C:\DATA\Tyoaika\TAika\obj\Debug\TAika.Form1.resources
 C:\DATA\Tyoaika\TAika\obj\Debug\TAika.Properties.Resources.resources
 C:\DATA\Tyoaika\TAika\obj\Debug\TAika.csproj.GenerateResource.cache
@@ -26,3 +25,4 @@ C:\DATA\Tyoaika\TAika\bin\Debug\Google.Protobuf.dll
 C:\DATA\Tyoaika\TAika\bin\Debug\MySql.Data.dll
 C:\DATA\Tyoaika\TAika\bin\Debug\MySql.Data.xml
 C:\DATA\Tyoaika\TAika\obj\Debug\TAika.csproj.CopyComplete
+C:\DATA\Tyoaika\TAika\obj\Debug\TAika.About.resources

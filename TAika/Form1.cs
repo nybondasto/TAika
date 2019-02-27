@@ -554,5 +554,17 @@ namespace TAika
 
             System.Diagnostics.Process.Start(file);
         }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dbconn.Close();
+            this.Close();
+        }
+
+        private void aboutTAikaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About frm = new About();
+            frm.ShowDialog();
+        }
     }
 }

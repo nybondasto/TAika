@@ -57,12 +57,17 @@
             this.kk_taakse = new System.Windows.Forms.Button();
             this.kk_eteen = new System.Windows.Forms.Button();
             this.lblKk = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnReport = new System.Windows.Forms.Button();
             this.lblViikko = new System.Windows.Forms.Label();
+            this.menu = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutTAikaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridi)).BeginInit();
             this.pnl.SuspendLayout();
             this.dialogi.SuspendLayout();
+            this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -111,7 +116,7 @@
             this.pnl.BackColor = System.Drawing.SystemColors.Control;
             this.pnl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pnl.Controls.Add(this.dialogi);
-            this.pnl.Location = new System.Drawing.Point(114, 38);
+            this.pnl.Location = new System.Drawing.Point(106, 54);
             this.pnl.Name = "pnl";
             this.pnl.Size = new System.Drawing.Size(659, 510);
             this.pnl.TabIndex = 6;
@@ -267,7 +272,7 @@
             // 
             this.lblPaivays.AutoSize = true;
             this.lblPaivays.Font = new System.Drawing.Font("Open Sans", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPaivays.Location = new System.Drawing.Point(12, 21);
+            this.lblPaivays.Location = new System.Drawing.Point(12, 26);
             this.lblPaivays.Name = "lblPaivays";
             this.lblPaivays.Size = new System.Drawing.Size(67, 26);
             this.lblPaivays.TabIndex = 1;
@@ -349,16 +354,48 @@
             this.lblKk.TabIndex = 9;
             this.lblKk.Text = "label6";
             // 
-            // pictureBox1
+            // lblViikko
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Image = global::TAika.Properties.Resources.kello;
-            this.pictureBox1.Location = new System.Drawing.Point(711, -2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(204, 66);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 11;
-            this.pictureBox1.TabStop = false;
+            this.lblViikko.AutoSize = true;
+            this.lblViikko.Font = new System.Drawing.Font("Open Sans", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblViikko.Location = new System.Drawing.Point(473, 24);
+            this.lblViikko.Name = "lblViikko";
+            this.lblViikko.Size = new System.Drawing.Size(30, 26);
+            this.lblViikko.TabIndex = 12;
+            this.lblViikko.Text = "---";
+            // 
+            // menu
+            // 
+            this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menu.Location = new System.Drawing.Point(0, 0);
+            this.menu.Name = "menu";
+            this.menu.Size = new System.Drawing.Size(927, 24);
+            this.menu.TabIndex = 13;
+            this.menu.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.closeToolStripMenuItem,
+            this.aboutTAikaToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.fileToolStripMenuItem.Text = "Tiedosto";
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Text = "Lopeta";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            // 
+            // aboutTAikaToolStripMenuItem
+            // 
+            this.aboutTAikaToolStripMenuItem.Name = "aboutTAikaToolStripMenuItem";
+            this.aboutTAikaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutTAikaToolStripMenuItem.Text = "Tietoja ohjelmasta";
+            this.aboutTAikaToolStripMenuItem.Click += new System.EventHandler(this.aboutTAikaToolStripMenuItem_Click);
             // 
             // btnReport
             // 
@@ -373,15 +410,16 @@
             this.btnReport.UseVisualStyleBackColor = true;
             this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
             // 
-            // lblViikko
+            // pictureBox1
             // 
-            this.lblViikko.AutoSize = true;
-            this.lblViikko.Font = new System.Drawing.Font("Open Sans", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblViikko.Location = new System.Drawing.Point(473, 19);
-            this.lblViikko.Name = "lblViikko";
-            this.lblViikko.Size = new System.Drawing.Size(30, 26);
-            this.lblViikko.TabIndex = 12;
-            this.lblViikko.Text = "---";
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Image = global::TAika.Properties.Resources.kello;
+            this.pictureBox1.Location = new System.Drawing.Point(711, -2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(204, 66);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 11;
+            this.pictureBox1.TabStop = false;
             // 
             // Form1
             // 
@@ -400,13 +438,17 @@
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lblPaivays);
             this.Controls.Add(this.gridi);
+            this.Controls.Add(this.menu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menu;
             this.Name = "Form1";
             this.Text = "TN - TAika";
             ((System.ComponentModel.ISupportInitialize)(this.gridi)).EndInit();
             this.pnl.ResumeLayout(false);
             this.dialogi.ResumeLayout(false);
             this.dialogi.PerformLayout();
+            this.menu.ResumeLayout(false);
+            this.menu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -442,6 +484,10 @@
         private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lblViikko;
+        private System.Windows.Forms.MenuStrip menu;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutTAikaToolStripMenuItem;
     }
 }
 
