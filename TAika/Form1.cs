@@ -26,6 +26,8 @@ namespace TAika
         int gkk = DateTime.Today.Month;
         int gvv = DateTime.Today.Year;
 
+        string[] viikkovarit = {"#FFFF00", "#00FFFF", "#0000FF", "#C0C0C0", "#A0A0A0", "#383838", "#FF0000", "#B1B1B1", "#3F3F3F", "#FF00FF", "#E0E0E0" };
+
         MySqlConnection dbconn;
 
         public Form1()
@@ -90,6 +92,7 @@ namespace TAika
             gridi.Columns[5].HeaderText = "Työaika";
             gridi.Columns[6].HeaderText = "Saldo";
             gridi.Columns[7].HeaderText = "Info";
+            gridi.Columns[8].HeaderText = "Viikko";
 
             gridi.Columns[1].DefaultCellStyle.Format = "dd.MM.yyyy";
             gridi.Columns[3].DefaultCellStyle.Format = "HH:mm";
@@ -97,6 +100,7 @@ namespace TAika
             
             gridi.Columns[0].Visible = false;
             gridi.Columns[1].Visible = false;
+            gridi.Columns[9].Visible = false;
 
             gridi.Columns[2].FillWeight = 60;
             gridi.Columns[3].FillWeight = 45;
@@ -104,11 +108,14 @@ namespace TAika
             gridi.Columns[5].FillWeight = 45;
             gridi.Columns[6].FillWeight = 45;
             gridi.Columns[7].FillWeight = 200;
+            gridi.Columns[8].FillWeight = 45;
 
             if (gridi.Rows != null && gridi.Rows.Count > 0)
                 riviID = (int)gridi.Rows[0].Cells[0].Value;
             else
                 riviID = -1;
+
+            ColorRows();
         }
 
 
@@ -116,7 +123,7 @@ namespace TAika
         {
             string sql = "select * from tunnit " + 
                 "where year(pvm) = " + vv.ToString() + " and " +
-                "month(pvm) = " + kk.ToString() + " " +
+                "month(pvm) between " + kk.ToString() + " and " + (kk + 1).ToString() + " " +
                 "order by pvm desc";
 
             List<aikarivi> lst = new List<aikarivi>();
@@ -124,6 +131,9 @@ namespace TAika
             MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             DataSet ds = new DataSet();
             long tsum = 0;
+            int WeekNumber;
+            int lastWeek = 0;
+            string weekColor = "";
 
             da.Fill(ds);
 
@@ -133,6 +143,8 @@ namespace TAika
                 {
                     DateTime dd = (DateTime)dr["pvm"];
                     DayOfWeek dow = dd.DayOfWeek;
+                    WeekNumber = GetIso8601WeekOfYear(dd);
+                     
                     string dayname = culture.DateTimeFormat.GetDayName(dow);
                     string fipv = CultureInfo.CurrentCulture.TextInfo.ToLower(dayname.ToLower());
                     string vp = fipv.Substring(0, 2);
@@ -160,7 +172,6 @@ namespace TAika
 
                     if (tyoaika < tavoiteTyoaika)
                     {
-
                         if (Math.Abs(saldominuutit) < 10)
                             saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + Math.Abs(saldominuutit) + " h";
                         else
@@ -174,6 +185,15 @@ namespace TAika
                             saldo = "+" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + saldominuutit + " h";
                     }
 
+                    //-- Viikkonumero ja viikon väri 
+                    if (lastWeek != WeekNumber)
+                    {
+                        lastWeek = WeekNumber;
+
+                        //.-- määritä väri
+                        weekColor = viikkovarit[WeekNumber];
+                    }
+
                     aikarivi ar = new aikarivi
                     {
                         id = (int)dr["id"],
@@ -183,9 +203,12 @@ namespace TAika
                         loppu = (DateTime)dr["lopetus"],
                         tyoaika = (string)dr["tyoaika"] + " h",
                         info = (string)dr["info"],
-                        saldo = saldo
+                        saldo = saldo,
+                        viikkonumero = WeekNumber, 
+                        vari = weekColor
                     };
-                                       
+
+                    
 
                     lst.Add(ar);
 
@@ -565,6 +588,33 @@ namespace TAika
         {
             About frm = new About();
             frm.ShowDialog();
+        }
+
+
+
+        // This presumes that weeks start with Monday.
+        // Week 1 is the 1st week of the year with a Thursday in it.
+        public static int GetIso8601WeekOfYear(DateTime time)
+        {
+            // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+            // be the same week# as whatever Thursday, Friday or Saturday are,
+            // and we always get those right
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                time = time.AddDays(3);
+            }
+
+            // Return the week of our adjusted day
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
+
+        private void ColorRows()
+        {
+            foreach (DataGridViewRow r in gridi.Rows)
+            {
+                r.DefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml(r.Cells[9].Value.ToString());
+            }
         }
     }
 }

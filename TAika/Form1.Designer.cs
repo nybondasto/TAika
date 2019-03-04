@@ -386,14 +386,14 @@
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.closeToolStripMenuItem.Text = "Lopeta";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // aboutTAikaToolStripMenuItem
             // 
             this.aboutTAikaToolStripMenuItem.Name = "aboutTAikaToolStripMenuItem";
-            this.aboutTAikaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutTAikaToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.aboutTAikaToolStripMenuItem.Text = "Tietoja ohjelmasta";
             this.aboutTAikaToolStripMenuItem.Click += new System.EventHandler(this.aboutTAikaToolStripMenuItem_Click);
             // 

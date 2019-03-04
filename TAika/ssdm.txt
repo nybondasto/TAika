@@ -1,0 +1,11 @@
+
+install ssdm
+
+https://linuxconfig.org/how-to-install-kde-plasma-desktop-on-ubuntu-18-04-bionic-beaver-linux 
+
+
+sudo apt install sddm 
+
+sitten 
+
+sudo dpkg-reconfigure sddm 

@@ -26,3 +26,4 @@ C:\DATA\Tyoaika\TAika\bin\Debug\MySql.Data.dll
 C:\DATA\Tyoaika\TAika\bin\Debug\MySql.Data.xml
 C:\DATA\Tyoaika\TAika\obj\Debug\TAika.csproj.CopyComplete
 C:\DATA\Tyoaika\TAika\obj\Debug\TAika.About.resources
+C:\DATA\Tyoaika\TAika\obj\Debug\TAika.csprojAssemblyReference.cache

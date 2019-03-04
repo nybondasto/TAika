@@ -1,0 +1,16 @@
+
+
+root@lsticket:/home/lsadmin# sudo lvmdiskscan
+  /dev/loop0               [     <13,67 MiB]
+  /dev/ubuntu-vg/ubuntu-lv [       4,00 GiB]
+  /dev/loop1               [      38,70 MiB]
+  /dev/sda1                [     512,00 MiB]
+  /dev/loop2               [     <15,27 MiB]
+  /dev/sda2                [       1,00 GiB]
+  /dev/loop3               [     <90,99 MiB]
+  /dev/sda3                [     236,97 GiB] LVM physical volume
+  1 disk
+  6 partitions
+  0 LVM physical volume whole disks
+  1 LVM physical volume
+root@lsticket:/home/lsadmin#

@@ -16,6 +16,9 @@ namespace TAika
         public string tyoaika { get; set; }
         public string saldo { get; set; }
         public string info { get; set; }
+        public int viikkonumero { get; set; }
+        public string vari { get; set; }
+
         
     }
 
