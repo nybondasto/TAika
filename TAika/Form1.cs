@@ -26,7 +26,7 @@ namespace TAika
         int gkk = DateTime.Today.Month;
         int gvv = DateTime.Today.Year;
 
-        string[] viikkovarit = {"#FFFF00", "#00FFFF", "#0000FF", "#C0C0C0", "#A0A0A0", "#383838", "#FF0000", "#B1B1B1", "#3F3F3F", "#FF00FF", "#E0E0E0" };
+        string[] viikkovarit = {"#FFFF00", "#00FFFF", "#0000FF", "#C0C0C0", "#A0A0A0", "#383838", "#FF0000", "#B1B1B1", "#3F3F3F", "#FF00FF", "#E0E0E0", "#454123" };
 
         MySqlConnection dbconn;
 
@@ -72,9 +72,9 @@ namespace TAika
             this.Close();
         }
 
-        private void TaytaGridi(int kk, int vv)
+        private void TaytaGridi(int kk, int vv, int kaikki = 0)
         {
-            List<aikarivi> lst = HaeData(kk, vv);
+            List<aikarivi> lst = HaeData(kk, vv, kaikki);
             string ktMin = kausiTotal.Minutes.ToString();
 
             if (kausiTotal.Minutes < 10)
@@ -119,13 +119,24 @@ namespace TAika
         }
 
 
-        private List<aikarivi> HaeData(int kk, int vv)
+        private List<aikarivi> HaeData(int kk, int vv, int kaikki = 0)
         {
-            string sql = "select * from tunnit " + 
-                "where year(pvm) = " + vv.ToString() + " and " +
-                "month(pvm) between " + kk.ToString() + " and " + (kk + 1).ToString() + " " +
-                "order by pvm desc";
+            string sql = "";
 
+            if (kaikki == 0)
+            {
+                sql = "select * from tunnit " +
+                    "where year(pvm) = " + vv.ToString() + " and " +
+                    "month(pvm) between " + kk.ToString() + " and " + (kk + 1).ToString() + " " +
+                    "order by pvm desc";
+            }
+            else
+            {
+                sql = "select * from tunnit " +
+                    "where year(pvm) = " + vv.ToString() + " and " +
+                    "month(pvm) between 1 and 12 " +
+                    "order by pvm desc";
+            }
             List<aikarivi> lst = new List<aikarivi>();
             MySqlCommand cmd = new MySqlCommand(sql, dbconn);
             MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -510,6 +521,7 @@ namespace TAika
             long kausisaldo = 0;
             long kausiErotus = 0;
             TimeSpan kausiSaldoTimespan;
+            string info = "";
 
             StreamWriter sw = new StreamWriter(file, false, Encoding.UTF8);
 
@@ -532,6 +544,8 @@ namespace TAika
                 paivanErotus = tyoaika - tavoiteTyoaika;
                 paivanSaldo = TimeSpan.FromTicks(paivanErotus);
                 saldominuutit = paivanSaldo.Minutes;
+                info = ar.info.Replace("\n", "\n" + new string('\t', 9)) + '\n';
+
 
                 if (tyoaika < tavoiteTyoaika)
                 {
@@ -551,7 +565,7 @@ namespace TAika
 
                 kausisaldo = kausisaldo + tyoaika;
 
-                sw.WriteLine("\t" + ar.pvm.ToString(@"dd.MM.yyyy") + "\t" + ar.alku.ToString("HH:mm") + "\t" + ar.loppu.ToString("HH:mm") + "\t" + ar.tyoaika + "\t\t" + saldo + "\t\t" + ar.info);
+                sw.WriteLine("\t" + ar.pvm.ToString(@"dd.MM.yyyy") + "\t" + ar.alku.ToString("HH:mm") + "\t" + ar.loppu.ToString("HH:mm") + "\t" + ar.tyoaika + "\t\t" + saldo + "\t\t" + info);
             }
 
             sw.WriteLine("\t----------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -614,6 +628,19 @@ namespace TAika
             foreach (DataGridViewRow r in gridi.Rows)
             {
                 r.DefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml(r.Cells[9].Value.ToString());
+            }
+        }
+
+        private void chkNaytaKaikki_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (chkNaytaKaikki.Checked)
+            {
+                TaytaGridi(12, 2019, 1);
+            }
+            else
+            {
+                TaytaGridi(3, 2019);
             }
         }
     }

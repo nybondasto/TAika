@@ -1,11 +1,148 @@
 
-install ssdm
+
+
+
+Poista Cloud-init -target:
+----------------------------------
+1. login.
+2. echo 'datasource_list: [ None ]' | sudo -s tee /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+3. sudo apt-get purge cloud-init
+4. sudo rm -rf /etc/cloud/; sudo rm -rf /var/lib/cloud/
+5. reboot.
+
+
+Aseta netplan:
+-------------------------------------
+cd /etc/netplan
+rm *.*
+nano 01-netcfg.yaml
+
+liitä ko. tiedostoon seuraava (pidä sisennys!):
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp2s0:
+      addresses:
+        - 192.168.1.253/24
+      gateway4: 192.168.1.1
+      nameservers:
+          addresses: [8.8.8.8, 8.8.4.4]
+
+tallenna -> reboot
+
+Asenna gdebi -työkalu .deb-pakettien käsittelyä varten:
+-------------------------------------------------------
+sudo apt-get install gdebi
+
+Käyttö (purkaa deb-paketin ja asentaa sen):
+sudo dpkg -i /absolute/path/to/deb/file sudo apt-get install -f
+
+
+Asenna tasksel:
+--------------------------------------
+sudo apt install tasksel
+
+
+Asenna Kubuntu -desktop:
+--------------------------------------
+sudo tasksel install kubuntu-desktop
+
+
+Asenna XUbuntu -desktop:
+--------------------------------------
+sudo apt-get install xubuntu-desktop
+
+
+Asenna ssdm:
+--------------------------------------
 
 https://linuxconfig.org/how-to-install-kde-plasma-desktop-on-ubuntu-18-04-bionic-beaver-linux 
 
-
 sudo apt install sddm 
 
-sitten 
+sitten:
 
 sudo dpkg-reconfigure sddm 
+reboot
+
+
+Asenna Let's Encrypt SSL Certificate:
+https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04
+
+
+
+Asenna PostgreSQL:
+https://tecadmin.net/install-postgresql-server-on-ubuntu/
+
+
+Asenna Java8 Open-JDK -ympäristö:
+--------------------------------------------
+apt-get install openjdk-8-jre 
+
+
+Asenna Elasticsearch:
+https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html  
+
+Näppärin asentaa XWindow-käyttöliittymässä tuplaklikkaamalla .deb-pakettia
+ja valitsemalla "Install".
+
+Asenna Attachment-plugin (sitten kun Elasticsearch on asennettu ja käynnissä):
+
+cd /usr/share/elasticsearch/bin
+sudo ./elasticsearch-plugin install ingest-attachment
+
+Antaa Java-turvallisuusvaroituksen, vastaa "y", niin asennus etenee loppuun.
+
+Lopuksi:  
+
+sudo sysctl -w vm.max_map_count=262144
+
+Käynnistetään elasticsearch:
+systemctl restart elasticsearch
+
+Lisätään elasticsearch käynnistymään automaattisesti bootin jälkeen:
+systemctl enable elasticsearch
+
+Asenna paketinhallinnan https-transport:
+----------------------------------------
+apt-get install wget apt-transport-https
+
+
+Zammad:in asennusinfoa:
+https://www.tecmint.com/install-zammad-ticket-system-in-centos-ubuntu-debian/
+
+
+Zammadin SMTP-asetukset:
+----------------------------------------
+Sisääntuleva (Email inbound)
+Tyyppi: IMAP
+Palvelin: smtp.office365.com
+Käyttäjä: tiketti@logisystems.fi 
+Salasana: 2019LSadm!n#%
+SSL/STARTTLS: kyllä
+Portti: 993
+Kansio: tyhjä
+Keep messages on server: kyllä
+
+Ulosmenevä (Email outbound)
+Lähetä sähköpostit käyttäen: SMTP
+Palvelin: smtp-mail.outlook.com
+Käyttäjä: tiketti@logisystems.fi
+Salasana: 2019LSadm!n#%
+Portti: 25
+
+Sähköpostiosoite:
+Näytön nimi: Logisystems Tiketti
+Sähköposti: tiketti@logisystems.fi
+
+
+Email Notification:
+-----------------------------------------
+Lähetä sähköpostit käyttäen: SMTP
+Palvelin: smtp.dnainternet.net
+Käyttäjä:  tyhjä
+Salasana: tyhjä
+Portti: 25
+

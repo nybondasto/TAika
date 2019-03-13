@@ -64,6 +64,7 @@
             this.aboutTAikaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReport = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.chkNaytaKaikki = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridi)).BeginInit();
             this.pnl.SuspendLayout();
             this.dialogi.SuspendLayout();
@@ -421,11 +422,25 @@
             this.pictureBox1.TabIndex = 11;
             this.pictureBox1.TabStop = false;
             // 
+            // chkNaytaKaikki
+            // 
+            this.chkNaytaKaikki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkNaytaKaikki.AutoSize = true;
+            this.chkNaytaKaikki.Font = new System.Drawing.Font("Open Sans", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkNaytaKaikki.Location = new System.Drawing.Point(579, 29);
+            this.chkNaytaKaikki.Name = "chkNaytaKaikki";
+            this.chkNaytaKaikki.Size = new System.Drawing.Size(112, 24);
+            this.chkNaytaKaikki.TabIndex = 14;
+            this.chkNaytaKaikki.Text = "Näytä kaikki";
+            this.chkNaytaKaikki.UseVisualStyleBackColor = true;
+            this.chkNaytaKaikki.CheckedChanged += new System.EventHandler(this.chkNaytaKaikki_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(927, 614);
+            this.Controls.Add(this.chkNaytaKaikki);
             this.Controls.Add(this.lblViikko);
             this.Controls.Add(this.pnl);
             this.Controls.Add(this.btnReport);
@@ -488,6 +503,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutTAikaToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkNaytaKaikki;
     }
 }
 
