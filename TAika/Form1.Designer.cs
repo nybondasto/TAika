@@ -110,6 +110,7 @@
             this.gridi.TabIndex = 0;
             this.gridi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridi_CellClick);
             this.gridi.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridi_doubleClick);
+            this.gridi.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.gridi_RowPrePaint);
             this.gridi.SelectionChanged += new System.EventHandler(this.gridi_SelectionChanged);
             // 
             // pnl

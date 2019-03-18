@@ -26,7 +26,15 @@ namespace TAika
         int gkk = DateTime.Today.Month;
         int gvv = DateTime.Today.Year;
 
-        string[] viikkovarit = {"#FFFF00", "#00FFFF", "#0000FF", "#C0C0C0", "#A0A0A0", "#383838", "#FF0000", "#B1B1B1", "#3F3F3F", "#FF00FF", "#E0E0E0", "#454123" };
+        string[] viikkovarit = { "#F2D7D5", "#EBDEF0", "#FADBD8", "#E8DAEF", "#D4E6F1", "#D6EAF8", "#D1F2EB", "#D0ECE7", "#D5F5E3", "#FCF3CF", "#FDEBD0", "#FAE5D3", "#F6DDCC", "#F2F3F4", "#EAEDED", "#E5E8E8", "#D5D8DC",
+                                "#C0392B", "#E74C3C", "#9B59B6", "#8E44AD", "#2980B9", "#3498DB", "#1ABC9C", "#16A085", "#27AE60", "#2ECC71", "#F1C40F", "#F39C12", "#E67E22", "#D35400", "#BDC3C7", "#95A5A6", "#7F8C8D",
+                                "#34495E", "#2C3E50", "#641E16", "#78281F", "#512E5F", "#4A235A", "154360", "#1B4F72", "#0E6251", "#0B5345", "#145A32", "#7D6608", "#7E5109", "#784212", "#6E2C00", "#17202A", "#FFFFFF",
+                                "#000000", "#F4ECF7"};
+
+        string[] viikkotekstivarit = { "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black",
+                                        "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "black", "black", "black", "white", "black", "white", "white",
+                                        "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "white", "black",
+                                        "white", "black"};
 
         MySqlConnection dbconn;
 
@@ -50,8 +58,13 @@ namespace TAika
             tanaan = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(day.ToLower());
             
             AsetaKellonaika();
-            timer1.Start();   
+            timer1.Start();
+
+            gridi.Rows.Clear();
             TaytaGridi(gkk, gvv);
+            gridi.Refresh();
+            gridi.Refresh();
+
         }
 
         private void AsetaKellonaika()
@@ -100,7 +113,8 @@ namespace TAika
             
             gridi.Columns[0].Visible = false;
             gridi.Columns[1].Visible = false;
-            gridi.Columns[9].Visible = false;
+            //gridi.Columns[9].Visible = false;
+            //gridi.Columns[10].Visible = false;
 
             gridi.Columns[2].FillWeight = 60;
             gridi.Columns[3].FillWeight = 45;
@@ -114,8 +128,6 @@ namespace TAika
                 riviID = (int)gridi.Rows[0].Cells[0].Value;
             else
                 riviID = -1;
-
-            ColorRows();
         }
 
 
@@ -145,6 +157,8 @@ namespace TAika
             int WeekNumber;
             int lastWeek = 0;
             string weekColor = "";
+            string textColor = "";
+            int luku = 0;
 
             da.Fill(ds);
 
@@ -171,6 +185,7 @@ namespace TAika
                     string saldo = "";
                     int saldominuutit = 0;
                     
+
                     tyoaikaString = (string)dr["tyoaika"];
                     ta = tyoaikaString.Split(':');
                     tunnit = int.Parse(ta[0]);
@@ -197,12 +212,14 @@ namespace TAika
                     }
 
                     //-- Viikkonumero ja viikon väri 
-                    if (lastWeek != WeekNumber)
+                    if (lastWeek.Equals(WeekNumber) == false)
                     {
                         lastWeek = WeekNumber;
 
-                        //.-- määritä väri
-                        weekColor = viikkovarit[WeekNumber];
+                        //-- määritä väri
+                        luku = ArvoLuku();
+                        weekColor = viikkovarit[luku];
+                        textColor = viikkotekstivarit[luku];
                     }
 
                     aikarivi ar = new aikarivi
@@ -216,7 +233,8 @@ namespace TAika
                         info = (string)dr["info"],
                         saldo = saldo,
                         viikkonumero = WeekNumber, 
-                        vari = weekColor
+                        vari = weekColor,
+                        tekstivari = textColor
                     };
 
                     
@@ -228,6 +246,13 @@ namespace TAika
             }
             kausiTotal = TimeSpan.FromTicks(tsum);
             return lst;
+        }
+
+
+        private int ArvoLuku()
+        {
+            int rInt = SeriouslyRandom.Next(0, 52);
+            return rInt; 
         }
 
         private aikarivi LisaaDatarivi()
@@ -623,24 +648,29 @@ namespace TAika
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
 
-        private void ColorRows()
-        {
-            foreach (DataGridViewRow r in gridi.Rows)
-            {
-                r.DefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml(r.Cells[9].Value.ToString());
-            }
-        }
-
         private void chkNaytaKaikki_CheckedChanged(object sender, EventArgs e)
         {
 
             if (chkNaytaKaikki.Checked)
             {
-                TaytaGridi(12, 2019, 1);
+                TaytaGridi(12, System.DateTime.Now.Year, 1);
             }
             else
             {
-                TaytaGridi(3, 2019);
+                TaytaGridi(System.DateTime.Now.Month, System.DateTime.Now.Year);
+            }
+        }
+
+        private void gridi_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            aikarivi ar = this.gridi.Rows[e.RowIndex].DataBoundItem as aikarivi;
+            if (null != ar)
+            {
+                DataGridViewCellStyle dcs = new DataGridViewCellStyle();
+                dcs.BackColor = System.Drawing.ColorTranslator.FromHtml(ar.vari);
+                dcs.ForeColor = System.Drawing.ColorTranslator.FromHtml(ar.tekstivari);
+
+                gridi.Rows[e.RowIndex].DefaultCellStyle.ApplyStyle(dcs);
             }
         }
     }
