@@ -113,8 +113,8 @@ namespace TAika
             
             gridi.Columns[0].Visible = false;
             gridi.Columns[1].Visible = false;
-            //gridi.Columns[9].Visible = false;
-            //gridi.Columns[10].Visible = false;
+            gridi.Columns[9].Visible = false;
+            gridi.Columns[10].Visible = false;
 
             gridi.Columns[2].FillWeight = 60;
             gridi.Columns[3].FillWeight = 45;
