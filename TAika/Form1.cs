@@ -106,11 +106,13 @@ namespace TAika
             gridi.Columns[6].HeaderText = "Saldo";
             gridi.Columns[7].HeaderText = "Info";
             gridi.Columns[8].HeaderText = "Viikko";
+            gridi.Columns[11].HeaderText = "Poissaolo";
 
             gridi.Columns[1].DefaultCellStyle.Format = "dd.MM.yyyy";
             gridi.Columns[3].DefaultCellStyle.Format = "HH:mm";
             gridi.Columns[4].DefaultCellStyle.Format = "HH:mm";
-            
+            gridi.Columns[11].DefaultCellStyle.Format = "0.00 h";
+
             gridi.Columns[0].Visible = false;
             gridi.Columns[1].Visible = false;
             gridi.Columns[9].Visible = false;
@@ -162,6 +164,9 @@ namespace TAika
 
             da.Fill(ds);
 
+            CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
             if (ds.Tables.Count > 0)
             {
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -184,8 +189,8 @@ namespace TAika
                     TimeSpan paivanSaldo;
                     string saldo = "";
                     int saldominuutit = 0;
-                    
-
+                    double poissaolo = 0;
+                                       
                     tyoaikaString = (string)dr["tyoaika"];
                     ta = tyoaikaString.Split(':');
                     tunnit = int.Parse(ta[0]);
@@ -195,6 +200,7 @@ namespace TAika
                     paivanErotus = tyoaika - tavoiteTyoaika;
                     paivanSaldo = TimeSpan.FromTicks(paivanErotus);
                     saldominuutit = paivanSaldo.Minutes;
+                    poissaolo = double.Parse(dr["poissaolo"].ToString(), NumberStyles.Any, ci);
 
                     if (tyoaika < tavoiteTyoaika)
                     {
@@ -234,7 +240,8 @@ namespace TAika
                         saldo = saldo,
                         viikkonumero = WeekNumber, 
                         vari = weekColor,
-                        tekstivari = textColor
+                        tekstivari = textColor.ToString(),
+                        poissaolo = poissaolo
                     };
 
                     
@@ -271,7 +278,8 @@ namespace TAika
                 alku = dt1,
                 loppu = dt2,
                 tyoaika = ts.ToString(@"hh\:mm"),
-                info = txtInfo.Text
+                info = txtInfo.Text,
+                poissaolo = float.Parse(txtMiinustunnit.Text)
             };
 
             return ar;
@@ -327,6 +335,7 @@ namespace TAika
             txtInfo.Text = "";
             lblID.Text = "-1";
             riviID = -1;
+            txtMiinustunnit.Text = "";
             pnl.Show();
             ToggleButtons(false);
         }
@@ -358,12 +367,12 @@ namespace TAika
 
             if (ar.id == -1)
             {
-                sql = "insert into tunnit(pvm, aloitus, lopetus, tyoaika, info) " +
+                sql = "insert into tunnit(pvm, aloitus, lopetus, tyoaika, info, poissaolo) " +
                    "values ('" + ar.pvm.ToString("yyyy-MM-dd HH:mm:ss") + "', '" +
                                ar.alku.ToString("yyyy-MM-dd HH:mm:ss") + "', '" +
                                ar.loppu.ToString("yyyy-MM-dd HH:mm:ss") + "', '" +
                                ar.tyoaika +
-                   "', '" + ar.info + "');";
+                   "', '" + ar.info + "', cast(" + ar.poissaolo.ToString().Replace(",", ".") + "as decimal(10,2)) );";
             }
             else
             {
@@ -372,7 +381,8 @@ namespace TAika
                     "aloitus = '" + ar.alku.ToString("yyyy-MM-dd HH:mm:ss") + "', " +
                     "lopetus = '" + ar.loppu.ToString("yyyy-MM-dd HH:mm:ss") + "', " +
                     "tyoaika = '" + ar.tyoaika + "', " +
-                    "info = '" + ar.info + "' " + 
+                    "info = '" + ar.info + "', " +
+                    "poissaolo = cast(" + ar.poissaolo.ToString().Replace(",", ".") + " as decimal(10,2)) " +
                     "where id = " + ar.id;
             }
 
@@ -434,6 +444,9 @@ namespace TAika
             DataSet ds = new DataSet();
             da.Fill(ds);
 
+            CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
             if (ds.Tables.Count > 0)
             {
                 aikarivi ar = new aikarivi();
@@ -445,6 +458,7 @@ namespace TAika
                     ar.loppu = DateTime.Parse(dr["lopetus"].ToString());
                     ar.tyoaika = dr["tyoaika"].ToString();
                     ar.info = dr["info"].ToString();
+                    ar.poissaolo = double.Parse(dr["poissaolo"].ToString(), NumberStyles.Any, ci);
 
                     pnl.Show();
                     lblID.Text = id.ToString();
@@ -453,9 +467,11 @@ namespace TAika
                     txtLoppuaika.Text = ar.loppu.ToString("HH:mm").Replace(".", ":");
                     txtTunnit.Text = ar.tyoaika;
                     txtInfo.Text = ar.info;
+                    txtMiinustunnit.Text = (ar.poissaolo == 0) ? "0,00" : ar.poissaolo.ToString("0.00,##");
                 }
             }
         }
+
 
         private void btnReport_Click(object sender, EventArgs e)
         {
@@ -673,5 +689,69 @@ namespace TAika
                 gridi.Rows[e.RowIndex].DefaultCellStyle.ApplyStyle(dcs);
             }
         }
+
+        private void colorTextbox(Control box, Mode state)
+        {
+            if (state == Mode.ENTER)
+                box.BackColor = System.Drawing.Color.FromArgb(185, 250, 123); 
+            else
+                box.BackColor = System.Drawing.Color.White;
+        }
+        
+        private void txtAlkuaika_Enter(object sender, EventArgs e)
+        {
+            colorTextbox(txtAlkuaika, Mode.ENTER);
+        }
+                
+        private void txtLoppuaika_Enter(object sender, EventArgs e)
+        {
+            colorTextbox(txtLoppuaika, Mode.ENTER);
+        }
+
+        private void txtMiinustunnit_Enter(object sender, EventArgs e)
+        {
+            colorTextbox(txtMiinustunnit, Mode.ENTER);
+        }
+
+        private void txtInfo_Enter(object sender, EventArgs e)
+        {
+            colorTextbox(txtInfo, Mode.ENTER);
+        }
+
+        private void txtAlkuaika_Leave(object sender, EventArgs e)
+        {
+            colorTextbox(txtAlkuaika, Mode.LEAVE);
+        }
+
+        private void txtLoppuaika_Leave(object sender, EventArgs e)
+        {
+            colorTextbox(txtLoppuaika, Mode.LEAVE);
+        }
+
+        private void txtMiinustunnit_Leave(object sender, EventArgs e)
+        {
+            colorTextbox(txtMiinustunnit, Mode.LEAVE);
+        }
+
+        private void txtInfo_Leave(object sender, EventArgs e)
+        {
+            colorTextbox(txtInfo, Mode.LEAVE);
+        }
+
+        private void dtPicker_Enter(object sender, EventArgs e)
+        {
+            colorTextbox(dtPicker, Mode.ENTER);
+        }
+
+        private void dtPicker_Leave(object sender, EventArgs e)
+        {
+            colorTextbox(dtPicker, Mode.LEAVE);
+        }
+    }
+
+    enum Mode
+    {
+        ENTER,
+        LEAVE
     }
 }

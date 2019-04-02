@@ -19,6 +19,7 @@ namespace TAika
         public int viikkonumero { get; set; }
         public string vari { get; set; }
         public string tekstivari { get; set; }
+        public double poissaolo { get; set; }
 
         
     }

@@ -65,6 +65,8 @@
             this.btnReport = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.chkNaytaKaikki = new System.Windows.Forms.CheckBox();
+            this.lblPoissaolo = new System.Windows.Forms.Label();
+            this.txtMiinustunnit = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridi)).BeginInit();
             this.pnl.SuspendLayout();
             this.dialogi.SuspendLayout();
@@ -106,7 +108,7 @@
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Open Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridi.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.gridi.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridi.Size = new System.Drawing.Size(903, 484);
+            this.gridi.Size = new System.Drawing.Size(903, 566);
             this.gridi.TabIndex = 0;
             this.gridi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridi_CellClick);
             this.gridi.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridi_doubleClick);
@@ -120,7 +122,7 @@
             this.pnl.Controls.Add(this.dialogi);
             this.pnl.Location = new System.Drawing.Point(106, 54);
             this.pnl.Name = "pnl";
-            this.pnl.Size = new System.Drawing.Size(659, 510);
+            this.pnl.Size = new System.Drawing.Size(647, 530);
             this.pnl.TabIndex = 6;
             this.pnl.Visible = false;
             this.pnl.Paint += new System.Windows.Forms.PaintEventHandler(this.pnl_Paint);
@@ -128,6 +130,8 @@
             // dialogi
             // 
             this.dialogi.BackColor = System.Drawing.SystemColors.Control;
+            this.dialogi.Controls.Add(this.lblPoissaolo);
+            this.dialogi.Controls.Add(this.txtMiinustunnit);
             this.dialogi.Controls.Add(this.lblID);
             this.dialogi.Controls.Add(this.button4);
             this.dialogi.Controls.Add(this.button3);
@@ -147,7 +151,7 @@
             this.dialogi.Location = new System.Drawing.Point(24, 21);
             this.dialogi.Name = "dialogi";
             this.dialogi.Padding = new System.Windows.Forms.Padding(5);
-            this.dialogi.Size = new System.Drawing.Size(598, 466);
+            this.dialogi.Size = new System.Drawing.Size(598, 488);
             this.dialogi.TabIndex = 5;
             this.dialogi.TabStop = false;
             this.dialogi.Text = "Tiedon lisäys";
@@ -155,7 +159,7 @@
             // lblID
             // 
             this.lblID.AutoSize = true;
-            this.lblID.Location = new System.Drawing.Point(23, 248);
+            this.lblID.Location = new System.Drawing.Point(23, 365);
             this.lblID.Name = "lblID";
             this.lblID.Size = new System.Drawing.Size(24, 22);
             this.lblID.TabIndex = 12;
@@ -166,10 +170,10 @@
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button4.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(354, 410);
+            this.button4.Location = new System.Drawing.Point(354, 432);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(103, 37);
-            this.button4.TabIndex = 11;
+            this.button4.TabIndex = 8;
             this.button4.Text = "Peruuta";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
@@ -178,10 +182,10 @@
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button3.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(465, 410);
+            this.button3.Location = new System.Drawing.Point(465, 432);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(105, 37);
-            this.button3.TabIndex = 10;
+            this.button3.TabIndex = 9;
             this.button3.Text = "OK";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
@@ -198,7 +202,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 174);
+            this.label4.Location = new System.Drawing.Point(23, 196);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(87, 22);
             this.label4.TabIndex = 8;
@@ -207,7 +211,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 270);
+            this.label3.Location = new System.Drawing.Point(23, 387);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(71, 22);
             this.label3.TabIndex = 7;
@@ -234,11 +238,13 @@
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(162, 174);
+            this.txtInfo.Location = new System.Drawing.Point(162, 200);
             this.txtInfo.Multiline = true;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(408, 220);
-            this.txtInfo.TabIndex = 4;
+            this.txtInfo.Size = new System.Drawing.Size(408, 217);
+            this.txtInfo.TabIndex = 7;
+            this.txtInfo.Enter += new System.EventHandler(this.txtInfo_Enter);
+            this.txtInfo.Leave += new System.EventHandler(this.txtInfo_Leave);
             // 
             // dtPicker
             // 
@@ -246,29 +252,36 @@
             this.dtPicker.Name = "dtPicker";
             this.dtPicker.Size = new System.Drawing.Size(408, 29);
             this.dtPicker.TabIndex = 3;
+            this.dtPicker.Enter += new System.EventHandler(this.dtPicker_Enter);
+            this.dtPicker.Leave += new System.EventHandler(this.dtPicker_Leave);
             // 
             // txtTunnit
             // 
             this.txtTunnit.Enabled = false;
-            this.txtTunnit.Location = new System.Drawing.Point(162, 158);
+            this.txtTunnit.Location = new System.Drawing.Point(27, 317);
             this.txtTunnit.Name = "txtTunnit";
-            this.txtTunnit.Size = new System.Drawing.Size(408, 29);
+            this.txtTunnit.Size = new System.Drawing.Size(83, 29);
             this.txtTunnit.TabIndex = 2;
+            this.txtTunnit.TabStop = false;
             this.txtTunnit.Visible = false;
             // 
             // txtLoppuaika
             // 
-            this.txtLoppuaika.Location = new System.Drawing.Point(162, 123);
+            this.txtLoppuaika.Location = new System.Drawing.Point(162, 124);
             this.txtLoppuaika.Name = "txtLoppuaika";
             this.txtLoppuaika.Size = new System.Drawing.Size(408, 29);
-            this.txtLoppuaika.TabIndex = 1;
+            this.txtLoppuaika.TabIndex = 5;
+            this.txtLoppuaika.Enter += new System.EventHandler(this.txtLoppuaika_Enter);
+            this.txtLoppuaika.Leave += new System.EventHandler(this.txtLoppuaika_Leave);
             // 
             // txtAlkuaika
             // 
             this.txtAlkuaika.Location = new System.Drawing.Point(162, 88);
             this.txtAlkuaika.Name = "txtAlkuaika";
             this.txtAlkuaika.Size = new System.Drawing.Size(408, 29);
-            this.txtAlkuaika.TabIndex = 0;
+            this.txtAlkuaika.TabIndex = 4;
+            this.txtAlkuaika.Enter += new System.EventHandler(this.txtAlkuaika_Enter);
+            this.txtAlkuaika.Leave += new System.EventHandler(this.txtAlkuaika_Leave);
             // 
             // lblPaivays
             // 
@@ -284,7 +297,7 @@
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.Location = new System.Drawing.Point(579, 565);
+            this.btnAdd.Location = new System.Drawing.Point(579, 647);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(103, 37);
             this.btnAdd.TabIndex = 2;
@@ -296,7 +309,7 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(688, 565);
+            this.button1.Location = new System.Drawing.Point(688, 647);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(103, 37);
             this.button1.TabIndex = 3;
@@ -308,7 +321,7 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(812, 565);
+            this.button2.Location = new System.Drawing.Point(812, 647);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(103, 37);
             this.button2.TabIndex = 4;
@@ -325,7 +338,7 @@
             // 
             this.kk_taakse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.kk_taakse.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.kk_taakse.Location = new System.Drawing.Point(12, 565);
+            this.kk_taakse.Location = new System.Drawing.Point(12, 647);
             this.kk_taakse.Name = "kk_taakse";
             this.kk_taakse.Size = new System.Drawing.Size(41, 37);
             this.kk_taakse.TabIndex = 7;
@@ -337,7 +350,7 @@
             // 
             this.kk_eteen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.kk_eteen.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.kk_eteen.Location = new System.Drawing.Point(59, 565);
+            this.kk_eteen.Location = new System.Drawing.Point(59, 647);
             this.kk_eteen.Name = "kk_eteen";
             this.kk_eteen.Size = new System.Drawing.Size(41, 37);
             this.kk_eteen.TabIndex = 8;
@@ -350,7 +363,7 @@
             this.lblKk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblKk.AutoSize = true;
             this.lblKk.Font = new System.Drawing.Font("Open Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKk.Location = new System.Drawing.Point(135, 572);
+            this.lblKk.Location = new System.Drawing.Point(135, 654);
             this.lblKk.Name = "lblKk";
             this.lblKk.Size = new System.Drawing.Size(55, 22);
             this.lblKk.TabIndex = 9;
@@ -436,11 +449,29 @@
             this.chkNaytaKaikki.UseVisualStyleBackColor = true;
             this.chkNaytaKaikki.CheckedChanged += new System.EventHandler(this.chkNaytaKaikki_CheckedChanged);
             // 
+            // lblPoissaolo
+            // 
+            this.lblPoissaolo.AutoSize = true;
+            this.lblPoissaolo.Location = new System.Drawing.Point(23, 163);
+            this.lblPoissaolo.Name = "lblPoissaolo";
+            this.lblPoissaolo.Size = new System.Drawing.Size(87, 22);
+            this.lblPoissaolo.TabIndex = 14;
+            this.lblPoissaolo.Text = "Poissaolo:";
+            // 
+            // txtMiinustunnit
+            // 
+            this.txtMiinustunnit.Location = new System.Drawing.Point(162, 160);
+            this.txtMiinustunnit.Name = "txtMiinustunnit";
+            this.txtMiinustunnit.Size = new System.Drawing.Size(408, 29);
+            this.txtMiinustunnit.TabIndex = 6;
+            this.txtMiinustunnit.Enter += new System.EventHandler(this.txtMiinustunnit_Enter);
+            this.txtMiinustunnit.Leave += new System.EventHandler(this.txtMiinustunnit_Leave);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(927, 614);
+            this.ClientSize = new System.Drawing.Size(927, 696);
             this.Controls.Add(this.chkNaytaKaikki);
             this.Controls.Add(this.lblViikko);
             this.Controls.Add(this.pnl);
@@ -505,6 +536,8 @@
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutTAikaToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkNaytaKaikki;
+        private System.Windows.Forms.Label lblPoissaolo;
+        private System.Windows.Forms.TextBox txtMiinustunnit;
     }
 }
 
