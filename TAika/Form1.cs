@@ -190,7 +190,19 @@ namespace TAika
                     string saldo = "";
                     int saldominuutit = 0;
                     double poissaolo = 0;
-                                       
+                    string sPoissaolo = "";
+                    TimeSpan poissaoloaika;
+                    int poissaolo_h = 0;
+                    int poissaolo_m = 0;
+
+                    poissaolo = double.Parse(dr["poissaolo"].ToString(), NumberStyles.Any, ci);
+                    sPoissaolo = dr["poissaolo"].ToString();
+
+                    poissaolo_h = int.Parse(sPoissaolo.Split('.')[0]);
+                    poissaolo_m = int.Parse(sPoissaolo.Split('.')[1]);
+
+                    poissaoloaika = new TimeSpan(poissaolo_h, poissaolo_m, 0);
+
                     tyoaikaString = (string)dr["tyoaika"];
                     ta = tyoaikaString.Split(':');
                     tunnit = int.Parse(ta[0]);
@@ -198,16 +210,20 @@ namespace TAika
                     tyoaika = new TimeSpan(tunnit, minuutit, 0).Ticks;
                     tavoiteTyoaika = new TimeSpan(7, 30, 0).Ticks;
                     paivanErotus = tyoaika - tavoiteTyoaika;
+
+                    paivanErotus = paivanErotus - poissaoloaika.Ticks;
+
                     paivanSaldo = TimeSpan.FromTicks(paivanErotus);
                     saldominuutit = paivanSaldo.Minutes;
-                    poissaolo = double.Parse(dr["poissaolo"].ToString(), NumberStyles.Any, ci);
+                    
+                    //tyoaika = tyoaika - poissaoloaika.Ticks;
 
-                    if (tyoaika < tavoiteTyoaika)
+                    if (tyoaika < tavoiteTyoaika || paivanSaldo.Ticks < 0)
                     {
                         if (Math.Abs(saldominuutit) < 10)
-                            saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + Math.Abs(saldominuutit) + " h";
+                            saldo = "-" + Math.Abs((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":0" + Math.Abs(saldominuutit) + " h";
                         else
-                            saldo = "-" + ((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + Math.Abs(saldominuutit) + " h";
+                            saldo = "-" + Math.Abs((paivanSaldo.Days * 24) + paivanSaldo.Hours) + ":" + Math.Abs(saldominuutit) + " h";
                     }
                     else
                     {
@@ -228,6 +244,8 @@ namespace TAika
                         textColor = viikkotekstivarit[luku];
                     }
 
+                    TimeSpan tsTyoaika = new TimeSpan(tyoaika);
+
                     aikarivi ar = new aikarivi
                     {
                         id = (int)dr["id"],
@@ -235,7 +253,8 @@ namespace TAika
                         vp = dd.ToString(@"dd.MM.yyyy") + " (" + vp + ")",
                         alku = (DateTime)dr["aloitus"],
                         loppu = (DateTime)dr["lopetus"],
-                        tyoaika = (string)dr["tyoaika"] + " h",
+                        tyoaika = (string) dr["tyoaika"] + " h",
+                        //tyoaika = tsTyoaika.Hours + ":" + tsTyoaika.Minutes,
                         info = (string)dr["info"],
                         saldo = saldo,
                         viikkonumero = WeekNumber, 
@@ -335,7 +354,7 @@ namespace TAika
             txtInfo.Text = "";
             lblID.Text = "-1";
             riviID = -1;
-            txtMiinustunnit.Text = "";
+            txtMiinustunnit.Text = "0,00";
             pnl.Show();
             ToggleButtons(false);
         }
@@ -372,7 +391,7 @@ namespace TAika
                                ar.alku.ToString("yyyy-MM-dd HH:mm:ss") + "', '" +
                                ar.loppu.ToString("yyyy-MM-dd HH:mm:ss") + "', '" +
                                ar.tyoaika +
-                   "', '" + ar.info + "', cast(" + ar.poissaolo.ToString().Replace(",", ".") + "as decimal(10,2)) );";
+                   "', '" + ar.info + "', cast(" + ar.poissaolo.ToString().Replace(",", ".") + " as decimal(10,2)) );";
             }
             else
             {
